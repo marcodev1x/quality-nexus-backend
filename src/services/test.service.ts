@@ -1,6 +1,7 @@
 import { db } from "../database";
-import { Test } from "../models/Test.model";
+import { Test, TestUpdate } from "../models/Test.model";
 import { userInstance } from "../instances/user.instance";
+import test from "node:test";
 
 export class TestService {
   async createTest(test: Test, userEmail: string) {
@@ -24,5 +25,33 @@ export class TestService {
       .select("description", "type", "config")
       .where("id", testId)
       .first();
+  }
+
+  async updateTest(testId: number, data: TestUpdate) {
+    const findTestById = await this.publicFindTest(testId);
+
+    if (!findTestById) return null;
+
+    const updateTest = await db("tests")
+      .where("id", testId)
+      .update({
+        description: data.description || findTestById.description,
+        type: data.type || findTestById.type,
+        config: JSON.stringify(data.config || findTestById.config),
+      });
+
+    if (!updateTest) return null;
+
+    return this.publicFindTest(testId);
+  }
+
+  async deleteTest(testId: number) {
+    const testToDelete: Test = await this.publicFindTest(testId);
+
+    if (!testToDelete) return null;
+
+    await db("tests").where("id", testId).del();
+
+    return { testId, testToDelete };
   }
 }
