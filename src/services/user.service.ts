@@ -56,4 +56,37 @@ export class UserService {
       token: generateToken(user.email),
     };
   }
+
+  async deleteUser(email: string) {
+    const userToDelete = await this.findUserSecrettly(email);
+
+    if (!userToDelete) return null;
+
+    const deletedUser = await db("TODO_USER").where("email", email).del();
+
+    return { deletedUser, email };
+  }
+
+  async updateUser(data: {
+    email: string;
+    nome?: string;
+    password?: string;
+    newEmail?: string;
+  }) {
+    const userToUpdate = await this.findUserSecrettly(data.email);
+
+    if (!userToUpdate) return null;
+
+    const updateUser = await db("TODO_USER")
+      .update({
+        nome: data.nome || userToUpdate.nome,
+        password: data.password
+          ? bcrypt.hashSync(data.password, 10)
+          : userToUpdate.password,
+        email: data.newEmail || userToUpdate.email,
+      })
+      .where("email", data.email);
+
+    return { userChanged: true };
+  }
 }
