@@ -7,5 +7,10 @@ const testRouter = Router();
 testRouter.post("/create", authMiddleware, testControllerInstance.createTest);
 testRouter.put("/update", authMiddleware, testControllerInstance.updateTest);
 testRouter.delete("/delete", authMiddleware, testControllerInstance.deleteTest);
+testRouter.get(
+  "/find-tests",
+  authMiddleware,
+  testControllerInstance.findListsMany,
+);
 
 export default testRouter;

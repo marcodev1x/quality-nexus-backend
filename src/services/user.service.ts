@@ -2,6 +2,7 @@ import { db } from "../database";
 import bcrypt from "bcrypt";
 import { User } from "../models/User.model";
 import { generateToken } from "../utils/jwt.utils";
+import { UserId } from "../types/UserId";
 
 export class UserService {
   async createUser(user: User): Promise<Object | null> {
@@ -25,7 +26,7 @@ export class UserService {
 
   async findUser(email: string) {
     const userFound = await db("TODO_USER")
-      .select("email")
+      .select("email", "nome", "role")
       .where("email", email)
       .first();
 
@@ -33,7 +34,7 @@ export class UserService {
   }
 
   async findUserSecrettly(email: string) {
-    const userFound = await db("TODO_USER")
+    const userFound: UserId = await db("TODO_USER")
       .select("*")
       .where("email", email)
       .first();
@@ -77,7 +78,7 @@ export class UserService {
 
     if (!userToUpdate) return null;
 
-    const updateUser = await db("TODO_USER")
+    await db("TODO_USER")
       .update({
         nome: data.nome || userToUpdate.nome,
         password: data.password

@@ -8,5 +8,6 @@ userRouter.post("/register", userControllerInstance.registerUser);
 userRouter.post("/login", userControllerInstance.login);
 userRouter.delete("/delete", authMiddleware, userControllerInstance.deleteUser);
 userRouter.put("/update", authMiddleware, userControllerInstance.updateUser);
+userRouter.get("/public", authMiddleware, userControllerInstance.publicUser);
 
 export default userRouter;

@@ -6,6 +6,7 @@ import {
   UserSchemaUpdate,
 } from "../models/User.model";
 import { UserService } from "../services/user.service";
+import { RequestAuth } from "../types/RequestAuth";
 
 const userInstance = new UserService();
 
@@ -124,5 +125,25 @@ export class UserController {
       message: "User updated successfully",
       user: userUpdate,
     });
+  }
+
+  async publicUser(req: RequestAuth, res: Response) {
+    if (!req.userEmail) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
+    const user = await userInstance.findUser(req.userEmail);
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json(user);
   }
 }

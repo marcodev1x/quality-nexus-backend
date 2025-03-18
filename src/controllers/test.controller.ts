@@ -96,4 +96,24 @@ export class TestController {
 
     res.status(200).json(deleteTest);
   }
+
+  async findListsMany(req: RequestAuth, res: Response) {
+    if (!req.userEmail) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
+    const findLists = await testInstance.findListsByUserId(req.userEmail);
+
+    if (!findLists) {
+      res.status(404).json({
+        message: "Test not found",
+      });
+      return;
+    }
+
+    res.status(200).json(findLists);
+  }
 }

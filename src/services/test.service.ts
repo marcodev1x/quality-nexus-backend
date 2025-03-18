@@ -54,4 +54,27 @@ export class TestService {
 
     return { testId, testToDelete };
   }
+
+  async findListsByUserId(userEmail: string) {
+    const findUserByIdSecrettly = await userInstance.findUserSecrettly(
+      userEmail,
+    );
+
+    if (!findUserByIdSecrettly) return null;
+
+    const findLists: Test[] = await db("tests")
+      .select(
+        "TODO_USER.email",
+        "tests.description",
+        "tests.type",
+        "tests.config",
+        "tests.createdAt",
+      )
+      .join("TODO_USER", "tests.user_id", "TODO_USER.id")
+      .where({
+        user_id: findUserByIdSecrettly.id,
+      });
+
+    return findLists;
+  }
 }
