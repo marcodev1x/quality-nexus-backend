@@ -17,8 +17,8 @@ export const authMiddleware = (
   }
 
   try {
-    const decodedToken = validateToken(token);
-    req.user = decodedToken;
+    const decodedToken = validateToken(token) as { userEmail: string };
+    req.userEmail = decodedToken.userEmail;
     next();
   } catch (err) {
     res.status(403).json({
