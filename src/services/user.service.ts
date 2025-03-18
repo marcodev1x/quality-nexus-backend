@@ -21,7 +21,7 @@ export class UserService {
       .select("nome", "email", "createdAt")
       .where("email", user.email)
       .first();
-    return [{ registeredUser, token: generateToken(registeredUser.email) }];
+    return { registeredUser, token: generateToken(registeredUser.email) };
   }
 
   async findUser(email: string) {
