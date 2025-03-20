@@ -9,5 +9,5 @@ userRouter.post("/login", userControllerInstance.login);
 userRouter.delete("/delete", authMiddleware, userControllerInstance.deleteUser);
 userRouter.put("/update", authMiddleware, userControllerInstance.updateUser);
 userRouter.get("/public", authMiddleware, userControllerInstance.publicUser);
-
+userRouter.get("/:email", userControllerInstance.getUser);
 export default userRouter;
