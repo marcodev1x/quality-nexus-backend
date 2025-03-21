@@ -1,13 +1,8 @@
-import { Response } from "express";
-import { TestService } from "../services/test.service";
-import {
-  TestSchema,
-  TestSchemaDelete,
-  TestSchemaUpdate,
-} from "../models/Test.model";
-import { RequestAuth } from "../types/RequestAuth";
+import {Response} from "express";
+import {TestSchema, TestSchemaDelete, TestSchemaUpdate,} from "../models/Test.model";
+import {RequestAuth} from "../types/RequestAuth";
+import {testInstance} from "../instances/test.instance.ts";
 
-const testInstance = new TestService();
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {

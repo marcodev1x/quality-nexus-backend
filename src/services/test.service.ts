@@ -1,7 +1,6 @@
-import { db } from "../database";
-import { Test, TestUpdate } from "../models/Test.model";
-import { userInstance } from "../instances/user.instance";
-import test from "node:test";
+import {db} from "../database";
+import {Test, TestUpdate} from "../models/Test.model";
+import {userInstance} from "../instances/user.instance";
 
 export class TestService {
   async createTest(test: Test, userEmail: string) {
@@ -78,3 +77,6 @@ export class TestService {
     return findLists;
   }
 }
+
+
+
