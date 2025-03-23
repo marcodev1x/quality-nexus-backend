@@ -1,6 +1,6 @@
-import {db} from "../database";
-import {Test, TestUpdate} from "../models/Test.model";
-import {userInstance} from "../instances/user.instance";
+import { db } from "../database";
+import { Test, TestUpdate } from "../models/Test.model";
+import { userInstance } from "../instances/user.instance";
 
 export class TestService {
   async createTest(test: Test, userEmail: string) {
@@ -20,7 +20,7 @@ export class TestService {
   }
 
   async publicFindTest(testId: number) {
-    return await db("tests")
+    return db("tests")
       .select("description", "type", "config")
       .where("id", testId)
       .first();
@@ -55,11 +55,10 @@ export class TestService {
   }
 
   async findListsByUserId(userEmail: string) {
-    const findUserByIdSecrettly = await userInstance.findUserSecrettly(
-      userEmail,
-    );
+    const findUserByIdSecretly =
+      await userInstance.findUserSecrettly(userEmail);
 
-    if (!findUserByIdSecrettly) return null;
+    if (!findUserByIdSecretly) return null;
 
     const findLists: Test[] = await db("tests")
       .select(
@@ -71,12 +70,9 @@ export class TestService {
       )
       .join("TODO_USER", "tests.user_id", "TODO_USER.id")
       .where({
-        user_id: findUserByIdSecrettly.id,
+        user_id: findUserByIdSecretly.id,
       });
 
     return findLists;
   }
 }
-
-
-
