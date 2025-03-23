@@ -25,7 +25,9 @@ export const TestSchema = z.object({
       url: z
         .string({ message: "URL is required" })
         .url({ message: "Invalid URL" }),
-      headers: z.record(z.string()).optional(),
+      headers: z
+        .array(z.object({ key: z.string(), value: z.string() }))
+        .optional(),
       body: z.any().optional(),
     },
     { message: "Invalid config" },
@@ -61,7 +63,7 @@ export const TestSchemaUpdate = z.object({
           )
           .optional(),
         url: z.string().url({ message: "Invalid URL" }).optional(),
-        headers: z.record(z.string()).optional(),
+        headers: z.array(z.string()).optional(),
         body: z.any().optional(),
       },
       { message: "Invalid config" },

@@ -1,8 +1,11 @@
-import {Response} from "express";
-import {TestSchema, TestSchemaDelete, TestSchemaUpdate,} from "../models/Test.model";
-import {RequestAuth} from "../types/RequestAuth";
-import {testInstance} from "../instances/test.instance.ts";
-
+import { Response } from "express";
+import {
+  TestSchema,
+  TestSchemaDelete,
+  TestSchemaUpdate,
+} from "../models/Test.model";
+import { RequestAuth } from "../types/RequestAuth";
+import { testInstance } from "../instances/test.instance.ts";
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {
@@ -33,7 +36,7 @@ export class TestController {
       req.userEmail,
     );
 
-    res.status(201).json(registerTest);
+    res.status(201).json({ message: "Teste criado com sucesso", registerTest });
   }
 
   async updateTest(req: RequestAuth, res: Response) {
@@ -110,5 +113,15 @@ export class TestController {
     }
 
     res.status(200).json(findLists);
+  }
+
+  private transformHeadersArrayToObject(headers: {key: string, value: string}[] | Record<string, string>): Record<string, string> {
+    if (Array.isArray(headers)) {
+      return headers.reduce((acc, {key, value}) => {
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
+    }
+    return headers;
   }
 }
