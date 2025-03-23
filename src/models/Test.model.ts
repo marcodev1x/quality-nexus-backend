@@ -7,7 +7,7 @@ export const TestSchema = z.object({
   }),
   config: z.object(
     {
-      duration: z.number({ message: "Duration is required" }),
+      duration: z.number().optional(),
       method: z.enum(
         [
           "GET",
