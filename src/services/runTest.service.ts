@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { expect } from "chai";
-import { Testing, TestResult, Expectations } from "../types/Tests";
-import { get } from "lodash";
+import axios, {AxiosRequestConfig} from "axios";
+import {expect} from "chai";
+import {Expectations, Testing, TestResult} from "../types/Tests";
+import {get} from "lodash";
 
 // Função auxiliar para executar a expectativa com segurança de tipos
 function runExpectation(
@@ -75,6 +75,10 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     headers[header.key] = header.value;
   });
 
+  if (tests.config.duration) {
+    axios.defaults.timeout = Number(tests.config.duration) * 1000;
+  }
+
   const requestConfig: AxiosRequestConfig = {
     method: tests.config.method,
     url: tests.config.url,
@@ -103,10 +107,27 @@ export async function runTests(tests: Testing): Promise<TestResult> {
       if (expectation.key === "status") {
         actualValue = axiosTest.status;
       }
-
       if (expectation.key === "headers") {
         actualValue = axiosTest.headers;
       }
+
+      if (expectation.key === "data") {
+        actualValue = axiosTest.data;
+      }
+
+      if (expectation.key === "body") {
+        actualValue = axiosTest.data;
+      }
+
+      if (expectation.key === "statusCode") {
+        actualValue = axiosTest.status;
+      }
+
+      if (expectation.key === "statusText") {
+            actualValue = axiosTest.statusText;
+      }
+
+
 
       if (actualValue === undefined) {
         return {
