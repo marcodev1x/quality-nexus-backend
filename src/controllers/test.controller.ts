@@ -6,6 +6,7 @@ import {
 } from "../models/Test.model";
 import { RequestAuth } from "../types/RequestAuth";
 import { testInstance } from "../instances/test.instance.ts";
+import { runTests } from "../services/runTest.service.ts";
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {
@@ -115,13 +116,25 @@ export class TestController {
     res.status(200).json(findLists);
   }
 
-  private transformHeadersArrayToObject(headers: {key: string, value: string}[] | Record<string, string>): Record<string, string> {
-    if (Array.isArray(headers)) {
-      return headers.reduce((acc, {key, value}) => {
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
+  async runTestsInternal(req: RequestAuth, res: Response) {
+    const validateSchemaRun = TestSchema.safeParse(req.body);
+
+    if (!validateSchemaRun.success) {
+      res.status(400).json({
+        message: validateSchemaRun.error.flatten().fieldErrors,
+      });
+      return;
     }
-    return headers;
+
+    const runTest = await runTests(validateSchemaRun.data);
+
+    if (!runTest) {
+      res.status(404).json({
+        message: "Test not found",
+      });
+      return;
+    }
+
+    res.status(200).json(runTest);
   }
 }

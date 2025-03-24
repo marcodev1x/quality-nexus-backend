@@ -12,5 +12,10 @@ testRouter.get(
   authMiddleware,
   testControllerInstance.findListsMany,
 );
+testRouter.post(
+  "/run-tests",
+  authMiddleware,
+  testControllerInstance.runTestsInternal,
+);
 
 export default testRouter;

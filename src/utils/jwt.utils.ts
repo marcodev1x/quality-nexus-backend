@@ -3,7 +3,6 @@ import { EnvsVars } from "../EnvsVars";
 
 export const generateToken = (userEmail: string) => {
   return jwt.sign({ userEmail }, EnvsVars.SECRET_KEY as string, {
-    expiresIn: "1h",
     algorithm: "HS256",
     encoding: "utf-8",
   });
