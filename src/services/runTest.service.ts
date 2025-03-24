@@ -125,6 +125,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
       );
 
       return {
+        response: axiosTest.data,
         key: expectation.key,
         operator: expectation.operator,
         value: expectation.value,
@@ -141,6 +142,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     const allPassed = results?.every((result) => result.passed) ?? true;
 
     return {
+      response: axiosTest.data,
       success: allPassed ? "All tests passed" : "Some tests failed",
       expectations: results || [],
       passed: allPassed,
@@ -148,7 +150,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
   } catch (error: any) {
     return {
       success: "Test failed",
-      expectations: mapExpectationReuse || [],
+      expectations: mapExpectationReuse || "Sem expects",
       passed: false,
       error: error.message,
     };

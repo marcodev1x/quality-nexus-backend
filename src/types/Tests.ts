@@ -82,7 +82,7 @@ export interface Expectations {
     | "doesNotIncrease"
     | "decreases"
     | "doesNotDecrease";
-  value: any;
+  value?: any;
 }
 
 interface Config {
@@ -115,6 +115,7 @@ export interface TestResult {
   passed: boolean;
   actualValue?: any;
   error?: string;
+  response?: any;
 }
 
 export interface TestConfig {
