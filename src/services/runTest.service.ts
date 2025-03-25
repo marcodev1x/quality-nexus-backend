@@ -9,6 +9,7 @@ function runExpectation(
   operator: Expectations["operator"],
   expected: any,
 ): { passed: boolean; error?: string } {
+  
   try {
     switch (operator) {
       case "equal":
@@ -127,10 +128,20 @@ export async function runTests(tests: Testing): Promise<TestResult> {
             actualValue = axiosTest.statusText;
       }
 
-
+      if(actualValue === null) {
+        return {
+          response: axiosTest.data,
+          key: expectation.key,
+          operator: expectation.operator,
+          value: expectation.value,
+          passed: false,
+          error: "Value not found",
+        };
+      }
 
       if (actualValue === undefined) {
         return {
+          response: axiosTest.data,
           key: expectation.key,
           operator: expectation.operator,
           value: expectation.value,

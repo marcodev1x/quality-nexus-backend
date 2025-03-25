@@ -55,14 +55,15 @@ export class TestService {
   }
 
   async findListsByUserId(userEmail: string) {
-    const findUserByIdSecretly =
-      await userInstance.findUserSecrettly(userEmail);
+    const findUserByIdSecretly = await userInstance.findUserSecrettly(
+      userEmail,
+    );
 
     if (!findUserByIdSecretly) return null;
 
     const findLists: Test[] = await db("tests")
       .select(
-        "TODO_USER.email",
+        "tests.id",
         "tests.description",
         "tests.type",
         "tests.config",

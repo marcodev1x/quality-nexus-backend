@@ -73,18 +73,23 @@ export class TestController {
   }
 
   async deleteTest(req: RequestAuth, res: Response) {
-    const validateSchemaDelete = TestSchemaDelete.safeParse(req.body);
-
-    if (!validateSchemaDelete.success) {
+    if (!req.params.testId) {
       res.status(400).json({
-        message: validateSchemaDelete.error.flatten().fieldErrors,
+        message: "Test ID is required",
       });
       return;
     }
 
-    const deleteTest = await testInstance.deleteTest(
-      validateSchemaDelete.data.testId,
-    );
+    if (!req.userEmail) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
+    const { testId } = req.params;
+
+    const deleteTest = await testInstance.deleteTest(Number(testId));
 
     if (!deleteTest) {
       res.status(404).json({

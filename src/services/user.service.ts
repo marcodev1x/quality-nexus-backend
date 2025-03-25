@@ -1,8 +1,8 @@
-import { db } from "../database";
+import {db} from "../database";
 import bcrypt from "bcrypt";
-import { User } from "../models/User.model";
-import { generateToken } from "../utils/jwt.utils";
-import { UserId } from "../types/UserId";
+import {User} from "../models/User.model";
+import {generateToken} from "../utils/jwt.utils";
+import {UserId} from "../types/UserId";
 
 export class UserService {
   async createUser(user: User): Promise<Object | null> {
@@ -18,19 +18,17 @@ export class UserService {
     if (!register) return null;
 
     const registeredUser = await db("TODO_USER")
-      .select("nome", "email", "createdAt")
+      .select("id","nome", "email", "createdAt")
       .where("email", user.email)
       .first();
-    return { registeredUser, token: generateToken(registeredUser.email) };
+    return { registeredUser, token: generateToken(registeredUser.email, registeredUser.id) };
   }
 
   async findUser(email: string) {
-    const userFound = await db("TODO_USER")
+    return db("TODO_USER")
       .select("email", "nome", "role")
       .where("email", email)
       .first();
-
-    return userFound;
   }
 
   async findUserSecrettly(email: string) {
@@ -54,7 +52,7 @@ export class UserService {
     return {
       nome: user.nome,
       email: user.email,
-      token: generateToken(user.email),
+      token: generateToken(user.email, user.id),
     };
   }
 

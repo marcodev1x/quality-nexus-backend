@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { EnvsVars } from "../EnvsVars";
+import {EnvsVars} from "../EnvsVars";
 
-export const generateToken = (userEmail: string) => {
-  return jwt.sign({ userEmail }, EnvsVars.SECRET_KEY as string, {
+export const generateToken = (userEmail: string, userId?: number  ) => {
+  return jwt.sign({ userEmail, userId }, EnvsVars.SECRET_KEY as string, {
     algorithm: "HS256",
     encoding: "utf-8",
   });
