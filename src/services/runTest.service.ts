@@ -1,7 +1,7 @@
-import axios, {AxiosRequestConfig} from "axios";
-import {expect} from "chai";
-import {Expectations, Testing, TestResult} from "../types/Tests";
-import {get} from "lodash";
+import axios, { AxiosRequestConfig } from "axios";
+import { expect } from "chai";
+import { Expectations, Testing, TestResult } from "../types/Tests";
+import { get } from "lodash";
 
 // Função auxiliar para executar a expectativa com segurança de tipos
 function runExpectation(
@@ -9,7 +9,6 @@ function runExpectation(
   operator: Expectations["operator"],
   expected: any,
 ): { passed: boolean; error?: string } {
-  
   try {
     switch (operator) {
       case "equal":
@@ -125,10 +124,10 @@ export async function runTests(tests: Testing): Promise<TestResult> {
       }
 
       if (expectation.key === "statusText") {
-            actualValue = axiosTest.statusText;
+        actualValue = axiosTest.statusText;
       }
 
-      if(actualValue === null) {
+      if (actualValue === null) {
         return {
           response: axiosTest.data,
           key: expectation.key,
