@@ -107,6 +107,7 @@ export const configSchema = z.object({
 });
 
 export const TestSchema = z.object({
+  id: z.number().optional(),
   description: z.string({ message: "Description is required" }),
   type: z.enum(["load", "performance", "integration"], {
     message: "Invalid type",

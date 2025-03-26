@@ -104,12 +104,14 @@ interface Config {
 }
 
 export interface Testing {
+  id?: number;
   description: string;
   type: "load" | "performance" | "integration";
   config: Config;
 }
 
 export interface TestResult {
+  id?: number;
   success: string;
   expectations: Expectations[];
   passed: boolean;

@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { Expectations, Testing, TestResult } from "../types/Tests";
 import { get } from "lodash";
 import { findExpecationSpecialCase } from "../utils/expectation.utils";
+import { testRunsInstance } from "../instances/testRuns.instance";
 
 // Função auxiliar para executar a expectativa com segurança de tipos
 function runExpectation(
@@ -71,14 +72,15 @@ function runExpectation(
 }
 
 export async function runTests(tests: Testing): Promise<TestResult> {
+  const startTime = Date.now();
+
   const headers: Record<string, string> = {};
   tests.config.headers?.forEach((header) => {
     headers[header.key] = header.value;
   });
 
-  if (tests.config.duration) {
-    axios.defaults.timeout = Number(tests.config.duration) * 1000;
-  }
+  // Store the test run ID returned from createTestRun
+  const testRunId = await testRunsInstance.createTestRun(tests.id!);
 
   const requestConfig: AxiosRequestConfig = {
     method: tests.config.method,
@@ -95,10 +97,11 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     })) || [];
 
   try {
+    const startTime = Date.now();
     const axiosTest = await axios(requestConfig);
 
     // Expectations
-    const results = tests.config.expectations?.map((expectation) => {
+    const results = tests.config.expectations?.map(async (expectation) => {
       let actualValue = findExpecationSpecialCase(axiosTest, expectation.key);
 
       if (actualValue === null) {
@@ -144,12 +147,24 @@ export async function runTests(tests: Testing): Promise<TestResult> {
       };
     });
 
-    const allPassed = results?.every((result) => result.passed) ?? true;
+    const resolvedResults = results ? await Promise.all(results) : [];
+    const allPassed = resolvedResults.every((result) => result.passed) ?? true;
+
+    const duration = (Date.now() - startTime) / 1000;
+
+    console.log({ resolvedResults, allPassed, tests, duration, testRunId });
+
+    // Use the stored testRunId instead of tests.id
+    await testRunsInstance.updateTestRun(
+      testRunId[0],
+      duration,
+      allPassed ? "completed" : "failed",
+    );
 
     return {
       response: axiosTest.data,
       success: allPassed ? "All tests passed" : "Some tests failed",
-      expectations: results || [],
+      expectations: resolvedResults || [],
       passed: allPassed,
     };
   } catch (error: any) {
