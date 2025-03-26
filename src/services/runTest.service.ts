@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { expect } from "chai";
 import { Expectations, Testing, TestResult } from "../types/Tests";
 import { get } from "lodash";
+import { findExpecationSpecialCase } from "../utils/expectation.utils";
 
 // Função auxiliar para executar a expectativa com segurança de tipos
 function runExpectation(
@@ -98,38 +99,11 @@ export async function runTests(tests: Testing): Promise<TestResult> {
 
     // Expectations
     const results = tests.config.expectations?.map((expectation) => {
-      let actualValue = get(axiosTest.data, expectation.key);
-
-      if (Array.isArray(axiosTest.data)) {
-        actualValue = get(axiosTest.data[0], expectation.key);
-      }
-
-      if (expectation.key === "status") {
-        actualValue = axiosTest.status;
-      }
-      if (expectation.key === "headers") {
-        actualValue = axiosTest.headers;
-      }
-
-      if (expectation.key === "data") {
-        actualValue = axiosTest.data;
-      }
-
-      if (expectation.key === "body") {
-        actualValue = axiosTest.data;
-      }
-
-      if (expectation.key === "statusCode") {
-        actualValue = axiosTest.status;
-      }
-
-      if (expectation.key === "statusText") {
-        actualValue = axiosTest.statusText;
-      }
+      let actualValue = findExpecationSpecialCase(axiosTest, expectation.key);
 
       if (actualValue === null) {
         return {
-          response: axiosTest.data,
+          TestResponse: axiosTest.data,
           key: expectation.key,
           operator: expectation.operator,
           value: expectation.value,
@@ -140,7 +114,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
 
       if (actualValue === undefined) {
         return {
-          response: axiosTest.data,
+          TestResponse: axiosTest.data,
           key: expectation.key,
           operator: expectation.operator,
           value: expectation.value,
@@ -156,14 +130,14 @@ export async function runTests(tests: Testing): Promise<TestResult> {
       );
 
       return {
-        response: axiosTest.data,
+        TestResponse: axiosTest.data,
         key: expectation.key,
         operator: expectation.operator,
         value: expectation.value,
         passed: passed
           ? {
               passed,
-              valueFound: actualValue,
+              valueFound: { chave: expectation.key, valor: actualValue },
             }
           : false,
         error,
