@@ -97,7 +97,6 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     })) || [];
 
   try {
-    const startTime = Date.now();
     const axiosTest = await axios(requestConfig);
 
     // Expectations
