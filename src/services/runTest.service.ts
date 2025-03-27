@@ -157,6 +157,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     await testRunsInstance.updateTestRun(
       testRunId[0],
       duration,
+      JSON.stringify({ passed: allPassed, resolvedResults }),
       allPassed ? "completed" : "failed",
     );
 

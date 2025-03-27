@@ -11,11 +11,17 @@ export class TestRuns {
     return createTestRun;
   }
 
-  async updateTestRun(testRunId: number, duration: number, status: string) {
+  async updateTestRun(
+    testRunId: number,
+    duration: number,
+    results: any,
+    status: string,
+  ) {
     const updateTestRun = await db("test_runs")
       .where({ id: testRunId })
       .update({
         duration,
+        results,
         status,
       });
     return updateTestRun;
