@@ -19,6 +19,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/knex": "^0.16.1",
     "@types/node": "^22.13.10",
+    "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
