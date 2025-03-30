@@ -132,7 +132,6 @@ export async function runTests(tests: Testing): Promise<TestResult> {
       );
 
       return {
-        TestResponse: axiosTest.data,
         key: expectation.key,
         operator: expectation.operator,
         value: expectation.value,
@@ -162,13 +161,19 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     );
 
     return {
-      response: axiosTest.data,
+      APIResponse: axiosTest.data,
       success: allPassed ? "All tests passed" : "Some tests failed",
       expectations: resolvedResults || [],
       passed: allPassed,
     };
   } catch (error: any) {
+    const apiResponse =
+      error && error.response && error.response.data
+        ? error.response.data
+        : { error: "Não foi possível conectar ao servidor" };
+
     return {
+      APIResponse: apiResponse,
       success: "Test failed",
       expectations: mapExpectationReuse || "Sem expects",
       passed: false,

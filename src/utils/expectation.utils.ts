@@ -1,29 +1,53 @@
 import { get } from "lodash";
 
 export const findExpecationSpecialCase = (response: any, key: string) => {
-  if (key === "status") {
-    return response.status;
+  interface SpecialCasesMap {
+    [key: string]: () => any;
   }
-  if (key === "headers") {
-    return response.headers;
+
+  const specialCases: SpecialCasesMap = {
+    status: () => response.status,
+    statusCode: () => response.status,
+    statusText: () => response.statusText,
+    headers: () => response.headers,
+    data: () => response.data,
+    body: () => response.data,
+  };
+
+  if (key in specialCases) {
+    return specialCases[key]();
   }
-  if (key === "data") {
-    return response.data;
-  }
-  if (key === "body") {
-    return response.data;
-  }
-  if (key === "statusCode") {
-    return response.status;
-  }
-  if (key === "statusText") {
-    return response.statusText;
+
+  // Verifica se a key tem notação para acessar arrays
+  const arrayMatch = key.match(/^(.*)\[(\d+|\*)\]\.(.*)$/);
+  if (arrayMatch) {
+    const [, arrayPath, indexStr, propPath] = arrayMatch;
+    const array = get(response.data, arrayPath);
+
+    if (Array.isArray(array)) {
+      if (indexStr === "*") {
+        // Retorna array com a propriedade de cada item
+        return array.map((item) => get(item, propPath));
+      } else {
+        // Retorna a propriedade de um item específico
+        const index = parseInt(indexStr, 10);
+        return array[index] ? get(array[index], propPath) : undefined;
+      }
+    }
   }
 
   let value = get(response.data, key);
 
-  if (Array.isArray(response.data) && value === undefined) {
-    value = get(response.data[0], key);
+  // Se não encontrou e data é um array, tenta no primeiro item
+  if (value === undefined && Array.isArray(response.data)) {
+    // Verifica em todos os itens do array
+    for (const item of response.data) {
+      const itemValue = get(item, key);
+      if (itemValue !== undefined) {
+        return itemValue;
+      }
+    }
   }
+
   return value;
 };

@@ -117,7 +117,7 @@ export interface TestResult {
   passed: boolean;
   actualValue?: any;
   error?: string;
-  response?: any;
+  APIResponse?: any;
 }
 
 export interface TestConfig {
