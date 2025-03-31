@@ -1,6 +1,7 @@
 import { get } from "lodash";
 
 export const findExpecationSpecialCase = (response: any, key: string) => {
+  // Casos especiais diretos
   interface SpecialCasesMap {
     [key: string]: () => any;
   }
@@ -18,36 +19,52 @@ export const findExpecationSpecialCase = (response: any, key: string) => {
     return specialCases[key]();
   }
 
-  // Verifica se a key tem notação para acessar arrays
-  const arrayMatch = key.match(/^(.*)\[(\d+|\*)\]\.(.*)$/);
-  if (arrayMatch) {
-    const [, arrayPath, indexStr, propPath] = arrayMatch;
-    const array = get(response.data, arrayPath);
+  // Função recursiva para processar chaves complexas
+  const processKey = (data: any, keyPath: string): any => {
+    // Verifica se a key tem notação para acessar arrays
+    const arrayMatch = keyPath.match(/^(.*?)\[(\d+|\*)\]\.?(.*)$/);
 
-    if (Array.isArray(array)) {
-      if (indexStr === "*") {
-        // Retorna array com a propriedade de cada item
-        return array.map((item) => get(item, propPath));
-      } else {
-        // Retorna a propriedade de um item específico
-        const index = parseInt(indexStr, 10);
-        return array[index] ? get(array[index], propPath) : undefined;
-      }
+    if (!arrayMatch) {
+      // Sem notação de array, usa get diretamente
+      return get(data, keyPath);
     }
-  }
 
-  let value = get(response.data, key);
+    const [, prefix, indexStr, suffix] = arrayMatch;
 
-  // Se não encontrou e data é um array, tenta no primeiro item
-  if (value === undefined && Array.isArray(response.data)) {
-    // Verifica em todos os itens do array
-    for (const item of response.data) {
-      const itemValue = get(item, key);
-      if (itemValue !== undefined) {
-        return itemValue;
-      }
+    // Obtém o array no caminho especificado
+    const targetArray = prefix ? get(data, prefix) : data;
+
+    if (!Array.isArray(targetArray)) {
+      return undefined;
     }
-  }
 
-  return value;
+    if (indexStr === "*") {
+      // Processa todos os elementos do array
+      if (!suffix) {
+        // Retorna todo o array se não houver sufixo
+        return targetArray;
+      }
+
+      // Mapeia e processa recursivamente cada elemento do array
+      return targetArray.map((item) => processKey(item, suffix));
+    } else {
+      // Processa um elemento específico do array
+      const index = parseInt(indexStr, 10);
+      if (index >= targetArray.length) {
+        return undefined;
+      }
+
+      if (!suffix) {
+        // Retorna o elemento inteiro se não houver sufixo
+        return targetArray[index];
+      }
+
+      // Processa recursivamente o elemento específico
+      return processKey(targetArray[index], suffix);
+    }
+  };
+
+  // Começa o processamento com a resposta.data (ou a resposta direta se for um array)
+  const dataToProcess = Array.isArray(response) ? response : response.data;
+  return processKey(dataToProcess, key);
 };

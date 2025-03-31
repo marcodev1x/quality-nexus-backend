@@ -81,7 +81,8 @@ export interface Expectations {
     | "increases"
     | "doesNotIncrease"
     | "decreases"
-    | "doesNotDecrease";
+    | "doesNotDecrease"
+    | "lenght.above";
   value?: any;
 }
 
@@ -112,6 +113,7 @@ export interface Testing {
 
 export interface TestResult {
   id?: number;
+  status?: number;
   success: string;
   expectations: Expectations[];
   passed: boolean;

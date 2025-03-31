@@ -89,6 +89,8 @@ const expectationOperators = [
   "doesNotIncrease",
   "decreases",
   "doesNotDecrease",
+  "length",
+  "lenght.above",
 ] as const;
 
 export const expectationSchema = z.object({

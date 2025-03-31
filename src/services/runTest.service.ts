@@ -32,16 +32,16 @@ function runExpectation(
         expect(actual).to.not.equal(expected);
         break;
       case "isAbove":
-        expect(actual).to.be.above(expected);
+        expect(actual).to.be.above(Number(expected));
         break;
       case "isAtLeast":
-        expect(actual).to.be.at.least(expected);
+        expect(actual).to.be.at.least(Number(expected));
         break;
       case "isBelow":
-        expect(actual).to.be.below(expected);
+        expect(actual).to.be.below(Number(expected));
         break;
       case "isAtMost":
-        expect(actual).to.be.at.most(expected);
+        expect(actual).to.be.at.most(Number(expected));
         break;
       case "isTrue":
         expect(actual).to.be.true;
@@ -60,6 +60,9 @@ function runExpectation(
         break;
       case "notExists":
         expect(actual).to.not.exist;
+        break;
+      case "lenght.above":
+        expect(actual).to.have.length.above(Number(expected));
         break;
 
       default:
@@ -105,6 +108,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
 
       if (actualValue === null) {
         return {
+          status: axiosTest.status,
           TestResponse: axiosTest.data,
           key: expectation.key,
           operator: expectation.operator,
@@ -116,7 +120,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
 
       if (actualValue === undefined) {
         return {
-          TestResponse: axiosTest.data,
+          status: axiosTest.status,
           key: expectation.key,
           operator: expectation.operator,
           value: expectation.value,
@@ -135,12 +139,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
         key: expectation.key,
         operator: expectation.operator,
         value: expectation.value,
-        passed: passed
-          ? {
-              passed,
-              valueFound: { chave: expectation.key, valor: actualValue },
-            }
-          : false,
+        passed: passed ? { status: true, found: actualValue } : null,
         error,
       };
     });
@@ -161,6 +160,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     );
 
     return {
+      status: axiosTest.status,
       APIResponse: axiosTest.data,
       success: allPassed ? "All tests passed" : "Some tests failed",
       expectations: resolvedResults || [],
@@ -173,6 +173,7 @@ export async function runTests(tests: Testing): Promise<TestResult> {
         : { error: "Não foi possível conectar ao servidor" };
 
     return {
+      status: error.message,
       APIResponse: apiResponse,
       success: "Test failed",
       expectations: mapExpectationReuse || "Sem expects",
