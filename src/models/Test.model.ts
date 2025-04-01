@@ -89,7 +89,6 @@ const expectationOperators = [
   "doesNotIncrease",
   "decreases",
   "doesNotDecrease",
-  "length",
   "lenght.above",
 ] as const;
 
