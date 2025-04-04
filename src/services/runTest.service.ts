@@ -65,7 +65,7 @@ function runExpectation(
         break;
 
       default:
-        throw new Error(`Operador não suportado: ${operator}`);
+        new Error(`Operador não suportado: ${operator}`);
     }
     return { passed: true, error: undefined };
   } catch (error: any) {
@@ -73,7 +73,9 @@ function runExpectation(
   }
 }
 
-export async function runTests(tests: Testing): Promise<TestResult> {
+export async function runTests(
+  tests: Testing,
+): Promise<TestResult | Error | null> {
   const startTime = Date.now();
 
   const headers: Record<string, string> = {};
@@ -81,8 +83,10 @@ export async function runTests(tests: Testing): Promise<TestResult> {
     headers[header.key] = header.value;
   });
 
+  if (!tests.id) return new Error("Test ID não encontrado");
+
   // Store the test run ID returned from createTestRun
-  const testRunId = await testRunsInstance.createTestRun(tests.id!);
+  const testRunId = await testRunsInstance.createTestRun(tests.id);
 
   const requestConfig: AxiosRequestConfig = {
     method: tests.config.method,
