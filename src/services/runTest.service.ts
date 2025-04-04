@@ -175,6 +175,16 @@ export async function runTests(
         ? error.response.data
         : { error: "Não foi possível conectar ao servidor" };
 
+    await testRunsInstance.updateTestRun(
+      testRunId[0],
+      0,
+      JSON.stringify({
+        passed: false,
+        error: `Erro na execução do teste - ${error.message}`,
+      }),
+      "failed",
+    );
+
     return {
       status: error.message,
       APIResponse: apiResponse,
