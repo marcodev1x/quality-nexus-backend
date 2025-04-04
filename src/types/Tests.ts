@@ -82,7 +82,7 @@ export interface Expectations {
     | "doesNotIncrease"
     | "decreases"
     | "doesNotDecrease"
-    | "lenght.above";
+    | "length.above";
   value?: any;
 }
 

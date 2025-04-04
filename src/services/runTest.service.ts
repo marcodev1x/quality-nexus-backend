@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { expect } from "chai";
 import { Expectations, Testing, TestResult } from "../types/Tests";
-import { get } from "lodash";
 import { findExpecationSpecialCase } from "../utils/expectation.utils";
 import { testRunsInstance } from "../instances/testRuns.instance";
 
@@ -61,7 +60,7 @@ function runExpectation(
       case "notExists":
         expect(actual).to.not.exist;
         break;
-      case "lenght.above":
+      case "length.above":
         expect(actual).to.have.length.above(Number(expected));
         break;
 
