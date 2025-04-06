@@ -1,12 +1,13 @@
 import { Response } from "express";
 import {
+  TestLoadSchema,
   TestSchema,
-  TestSchemaDelete,
   TestSchemaUpdate,
 } from "../models/Test.model";
 import { RequestAuth } from "../types/RequestAuth";
 import { testInstance } from "../instances/test.instance.ts";
 import { runTests } from "../services/runTest.service.ts";
+import { loadTestInstance } from "../instances/load.instance.ts";
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {
@@ -141,5 +142,31 @@ export class TestController {
     }
 
     res.status(200).json(runTest);
+  }
+
+  async runLoadTestsInternal(req: RequestAuth, res: Response) {
+    const validateLoadSchema = TestLoadSchema.safeParse(req.body);
+
+    if (!validateLoadSchema.success) {
+      res.json(400).json({
+        message: validateLoadSchema.error.flatten().fieldErrors,
+        error: "Invalid schema",
+      });
+
+      return;
+    }
+
+    const runLoadTest = await loadTestInstance.autoCannonCallback(
+      validateLoadSchema.data,
+    );
+
+    if (!runLoadTest) {
+      res.status(404).json({
+        message: "Test not found",
+      });
+      return;
+    }
+
+    res.status(200).json(runLoadTest);
   }
 }

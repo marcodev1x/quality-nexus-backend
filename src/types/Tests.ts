@@ -86,7 +86,7 @@ export interface Expectations {
   value?: any;
 }
 
-interface Config {
+export interface Config {
   duration?: string;
   method:
     | "GET"
@@ -111,18 +111,15 @@ export interface Testing {
   config: Config;
 }
 
-export interface TestResult {
+export interface TestingLoad {
   id?: number;
-  status?: number;
-  success: string;
-  expectations: Expectations[];
-  passed: boolean;
-  actualValue?: any;
-  error?: string;
-  APIResponse?: any;
+  description: string;
+  type: "load" | "performance" | "integration";
+  config: LoadConfig;
 }
 
-export interface TestConfig {
+export interface LoadConfig {
+  duration?: string;
   method:
     | "GET"
     | "POST"
@@ -134,7 +131,19 @@ export interface TestConfig {
     | "TRACE"
     | "CONNECT";
   url: string;
-  headers?: Header[];
+  headers?: any;
   body?: any;
-  expectations?: Expectations[];
+  usersQt?: number;
+  time?: number;
+}
+
+export interface TestResult {
+  id?: number;
+  status?: number;
+  success: string;
+  expectations: Expectations[];
+  passed: boolean;
+  actualValue?: any;
+  error?: string;
+  APIResponse?: any;
 }

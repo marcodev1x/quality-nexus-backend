@@ -1,9 +1,9 @@
 import { db } from "../database";
-import { Test, TestUpdate } from "../models/Test.model";
+import { Test, TestLoad, TestUpdate } from "../models/Test.model";
 import { userInstance } from "../instances/user.instance";
 
 export class TestService {
-  async createTest(test: Test, userEmail: string) {
+  async createTest(test: Test | TestLoad, userEmail: string) {
     if (!userEmail) return null;
     const { id } = await userInstance.findUserSecrettly(userEmail);
 
@@ -11,6 +11,7 @@ export class TestService {
 
     const createTest = await db("tests").insert({
       ...test,
+      duration: test.config.time,
       user_id: id,
     });
 
@@ -55,9 +56,8 @@ export class TestService {
   }
 
   async findListsByUserId(userEmail: string) {
-    const findUserByIdSecretly = await userInstance.findUserSecrettly(
-      userEmail,
-    );
+    const findUserByIdSecretly =
+      await userInstance.findUserSecrettly(userEmail);
 
     if (!findUserByIdSecretly) return null;
 

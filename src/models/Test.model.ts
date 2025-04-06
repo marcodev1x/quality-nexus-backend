@@ -105,6 +105,8 @@ export const configSchema = z.object({
   headers: z.array(z.object({ key: z.string(), value: z.string() })).optional(),
   body: z.any().optional(),
   expectations: z.array(expectationSchema).optional(),
+  usersQt: z.number().optional(),
+  time: z.number().optional(),
 });
 
 export const TestSchema = z.object({
@@ -124,15 +126,23 @@ export const TestSchemaUpdate = z.object({
   config: configSchema.partial(),
 });
 
-export const TestSchemaDelete = z.object({
-  testId: z.number(),
+export const loadConfigSchema = z.object({
+  duration: z.string().optional(),
+  method: z.enum(httpMethods),
+  url: z.string().url({ message: "Invalid URL" }),
+  headers: z.array(z.object({ key: z.string(), value: z.string() })).optional(),
+  body: z.any().optional(),
+  usersQt: z.number().optional(),
+  time: z.number().optional(),
 });
 
-export const testingSchema = z.object({
+export const TestLoadSchema = z.object({
+  id: z.number().optional(),
   description: z.string(),
-  type: z.enum(["load", "performance", "integration"]),
-  config: configSchema,
+  type: z.literal("load"),
+  config: loadConfigSchema,
 });
 
 export type Test = z.infer<typeof TestSchema>;
+export type TestLoad = z.infer<typeof TestLoadSchema>;
 export type TestUpdate = z.infer<typeof TestSchemaUpdate>;

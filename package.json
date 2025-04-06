@@ -27,7 +27,9 @@
     "zod": "^3.24.2"
   },
   "dependencies": {
+    "@types/autocannon": "^7.12.6",
     "@types/lodash": "^4.17.16",
+    "autocannon": "^8.0.0",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "chai": "^5.2.0",

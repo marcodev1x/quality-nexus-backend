@@ -21,5 +21,10 @@ testRouter.post(
   authMiddleware,
   testControllerInstance.runTestsInternal,
 );
+testRouter.post(
+  "/run-tests-load",
+  authMiddleware,
+  testControllerInstance.runLoadTestsInternal,
+);
 
 export default testRouter;
