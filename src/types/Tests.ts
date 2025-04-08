@@ -131,10 +131,14 @@ export interface LoadConfig {
     | "TRACE"
     | "CONNECT";
   url: string;
-  headers?: any;
+  headers?: {
+    key: string;
+    value: string;
+  };
   body?: any;
   usersQt?: number;
   time?: number;
+  workersthreads?: number;
 }
 
 export interface TestResult {

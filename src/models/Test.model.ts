@@ -107,6 +107,7 @@ export const configSchema = z.object({
   expectations: z.array(expectationSchema).optional(),
   usersQt: z.number().optional(),
   time: z.number().optional(),
+  workersthreads: z.number().optional(),
 });
 
 export const TestSchema = z.object({
@@ -134,6 +135,7 @@ export const loadConfigSchema = z.object({
   body: z.any().optional(),
   usersQt: z.number().optional(),
   time: z.number().optional(),
+  workersthreads: z.number().optional(),
 });
 
 export const TestLoadSchema = z.object({
