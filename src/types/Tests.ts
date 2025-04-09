@@ -134,7 +134,7 @@ export interface LoadConfig {
   headers?: {
     key: string;
     value: string;
-  };
+  }[];
   body?: any;
   usersQt?: number;
   time?: number;

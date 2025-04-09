@@ -3,7 +3,6 @@ import { TestingLoad } from "../types/Tests.ts";
 
 export class LoadTestService {
   async autoCannonCallback(data: TestingLoad): Promise<any> {
-    // Transforma o array de headers no formato esperado pelo autocannon
     const transformedHeaders: Record<string, string> = {};
 
     if (Array.isArray(data.config.headers)) {
@@ -13,7 +12,7 @@ export class LoadTestService {
         }
       });
     }
-
+    
     const options = {
       url: data.config.url,
       title: data.description,

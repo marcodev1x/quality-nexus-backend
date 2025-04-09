@@ -148,7 +148,7 @@ export class TestController {
     const validateLoadSchema = TestLoadSchema.safeParse(req.body);
 
     if (!validateLoadSchema.success) {
-      res.json(400).json({
+      res.status(400).json({
         message: validateLoadSchema.error.flatten().fieldErrors,
         error: "Invalid schema",
       });
