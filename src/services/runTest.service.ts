@@ -109,21 +109,10 @@ export async function runTests(
     const results = tests.config.expectations?.map(async (expectation) => {
       let actualValue = findExpecationSpecialCase(axiosTest, expectation.key);
 
-      if (actualValue === null) {
+      if (actualValue === null || actualValue === undefined) {
         return {
           status: axiosTest.status,
           TestResponse: axiosTest.data,
-          key: expectation.key,
-          operator: expectation.operator,
-          value: expectation.value,
-          passed: false,
-          error: "Value not found",
-        };
-      }
-
-      if (actualValue === undefined) {
-        return {
-          status: axiosTest.status,
           key: expectation.key,
           operator: expectation.operator,
           value: expectation.value,

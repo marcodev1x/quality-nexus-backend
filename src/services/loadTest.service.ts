@@ -12,7 +12,7 @@ export class LoadTestService {
         }
       });
     }
-    
+
     const options = {
       url: data.config.url,
       title: data.description,
@@ -24,6 +24,7 @@ export class LoadTestService {
       method: data.config.method || "GET",
       socketPath: undefined,
       reconnect: true,
+      pipeling: 2,
       timeout: 10,
     };
 
