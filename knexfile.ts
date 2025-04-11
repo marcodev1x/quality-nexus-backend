@@ -1,6 +1,5 @@
 import { EnvsVars } from "./src/EnvsVars";
 
-console.log(EnvsVars);
 const knexcfg = {
   development: {
     client: "mysql2",

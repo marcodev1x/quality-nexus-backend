@@ -1,6 +1,6 @@
-import {validateToken} from "./../utils/jwt.utils";
-import {NextFunction, Response} from "express";
-import {RequestAuth} from "../types/RequestAuth";
+import { validateToken } from "./../utils/jwt.utils";
+import { NextFunction, Response } from "express";
+import { RequestAuth } from "../types/RequestAuth";
 
 export const authMiddleware = (
   req: RequestAuth,
@@ -17,7 +17,10 @@ export const authMiddleware = (
   }
 
   try {
-    const decodedToken = validateToken(token) as { userEmail: string, userId: number };
+    const decodedToken = validateToken(token) as {
+      userEmail: string;
+      userId: number;
+    };
     req.userEmail = decodedToken.userEmail;
     req.userId = decodedToken.userId;
     console.log(decodedToken);
