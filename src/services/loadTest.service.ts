@@ -18,8 +18,11 @@ export class LoadTestService {
       title: data.description,
       connections: data.config.usersQt,
       duration: data.config.time,
-      body: data.config.body ? JSON.stringify(data.config.body) : undefined,
-      headers: transformedHeaders,
+      body: JSON.stringify(data.config.body),
+      headers: {
+        "Content-Type": "application/json",
+        ...transformedHeaders,
+      },
       workers: data.config.workersthreads || 1,
       method: data.config.method || "GET",
       socketPath: undefined,
