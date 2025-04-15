@@ -57,6 +57,17 @@ export class UserController {
       return;
     }
 
+    const verifyExists = await userInstance.findUser(
+      validateRequestDTO.data.email,
+    );
+
+    if (!verifyExists) {
+      res.status(401).json({
+        message: "Invalid credentials",
+      });
+      return;
+    }
+
     const user = await userInstance.login(
       validateRequestDTO.data.email,
       validateRequestDTO.data.password,
