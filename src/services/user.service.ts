@@ -1,8 +1,8 @@
-import {db} from "../database";
+import { db } from "../database";
 import bcrypt from "bcrypt";
-import {User} from "../models/User.model";
-import {generateToken} from "../utils/jwt.utils";
-import {UserId} from "../types/UserId";
+import { User } from "../models/User.model";
+import { generateToken } from "../utils/jwt.utils";
+import { UserId } from "../types/UserId";
 
 export class UserService {
   async createUser(user: User): Promise<Object | null> {
@@ -18,10 +18,13 @@ export class UserService {
     if (!register) return null;
 
     const registeredUser = await db("TODO_USER")
-      .select("id","nome", "email", "createdAt")
+      .select("id", "nome", "email", "createdAt")
       .where("email", user.email)
       .first();
-    return { registeredUser, token: generateToken(registeredUser.email, registeredUser.id) };
+    return {
+      registeredUser,
+      token: generateToken(registeredUser.email, registeredUser.id),
+    };
   }
 
   async findUser(email: string) {
@@ -87,5 +90,9 @@ export class UserService {
       .where("email", data.email);
 
     return { userChanged: true };
+  }
+
+  async getAllUsers() {
+    return db("TODO_USER").select("id", "nome", "email", "createdAt");
   }
 }
