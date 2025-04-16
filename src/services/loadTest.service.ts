@@ -2,7 +2,7 @@ import autocannon from "autocannon";
 import { TestingLoad } from "../types/Tests.ts";
 
 export class LoadTestService {
-  async autoCannonCallback(data: TestingLoad): Promise<any> {
+  async autoCannonCallback(data: TestingLoad): Promise<autocannon.Result> {
     const transformedHeaders: Record<string, string> = {};
 
     if (Array.isArray(data.config.headers)) {
@@ -27,7 +27,6 @@ export class LoadTestService {
       method: data.config.method || "GET",
       socketPath: undefined,
       reconnect: true,
-      pipeling: 2,
       timeout: 10,
     };
 

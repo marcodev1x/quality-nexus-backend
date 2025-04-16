@@ -3,75 +3,7 @@ import { expect } from "chai";
 import { Expectations, Testing, TestResult } from "../types/Tests";
 import { findExpecationSpecialCase } from "../utils/expectation.utils";
 import { testRunsInstance } from "../instances/testRuns.instance";
-
-// Função auxiliar para executar a expectativa com segurança de tipos
-function runExpectation(
-  actual: any,
-  operator: Expectations["operator"],
-  expected: any,
-): { passed: boolean; error?: string } {
-  try {
-    switch (operator) {
-      case "equal":
-        expect(actual).to.equal(expected);
-        break;
-      case "notEqual":
-        expect(actual).to.not.equal(expected);
-        break;
-      case "deepEqual":
-        expect(actual).to.deep.equal(expected);
-        break;
-      case "notDeepEqual":
-        expect(actual).to.not.deep.equal(expected);
-        break;
-      case "strictEqual":
-        expect(actual).to.equal(expected);
-        break;
-      case "notStrictEqual":
-        expect(actual).to.not.equal(expected);
-        break;
-      case "isAbove":
-        expect(actual).to.be.above(Number(expected));
-        break;
-      case "isAtLeast":
-        expect(actual).to.be.at.least(Number(expected));
-        break;
-      case "isBelow":
-        expect(actual).to.be.below(Number(expected));
-        break;
-      case "isAtMost":
-        expect(actual).to.be.at.most(Number(expected));
-        break;
-      case "isTrue":
-        expect(actual).to.be.true;
-        break;
-      case "isFalse":
-        expect(actual).to.be.false;
-        break;
-      case "isNull":
-        expect(actual).to.be.null;
-        break;
-      case "isNotNull":
-        expect(actual).to.not.be.null;
-        break;
-      case "exists":
-        expect(actual).to.exist;
-        break;
-      case "notExists":
-        expect(actual).to.not.exist;
-        break;
-      case "length.above":
-        expect(actual).to.have.length.above(Number(expected));
-        break;
-
-      default:
-        new Error(`Operador não suportado: ${operator}`);
-    }
-    return { passed: true, error: undefined };
-  } catch (error: any) {
-    return { passed: false, error: error.message };
-  }
-}
+import { runExpectation } from "../helpers/runExpectation.helper";
 
 export async function runTests(
   tests: Testing,
@@ -131,7 +63,7 @@ export async function runTests(
         key: expectation.key,
         operator: expectation.operator,
         value: expectation.value,
-        passed: passed ? { status: true, found: actualValue } : null,
+        passed: passed ? { status: true, found: actualValue } : false,
         error,
       };
     });
@@ -164,9 +96,11 @@ export async function runTests(
         ? error.response.data
         : { error: "Não foi possível conectar ao servidor" };
 
+    const durationError = (Date.now() - startTime) / 1000;
+
     await testRunsInstance.updateTestRun(
       testRunId[0],
-      0,
+      durationError,
       JSON.stringify({
         passed: false,
         error: `Erro na execução do teste - ${error.message}`,
