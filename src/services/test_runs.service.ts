@@ -17,13 +17,10 @@ export class TestRuns {
     results: any,
     status: string,
   ) {
-    const updateTestRun = await db("test_runs")
-      .where({ id: testRunId })
-      .update({
-        duration,
-        results,
-        status,
-      });
-    return updateTestRun;
+    return await db("test_runs").where({ id: testRunId }).update({
+      duration,
+      results,
+      status,
+    });
   }
 }

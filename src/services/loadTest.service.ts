@@ -1,8 +1,11 @@
 import autocannon from "autocannon";
 import { TestingLoad } from "../types/Tests.ts";
+import { testRunsInstance } from "../instances/testRuns.instance.ts";
 
 export class LoadTestService {
-  async autoCannonCallback(data: TestingLoad): Promise<autocannon.Result> {
+  async autoCannonCallback(
+    data: TestingLoad,
+  ): Promise<autocannon.Result | undefined> {
     const transformedHeaders: Record<string, string> = {};
 
     if (Array.isArray(data.config.headers)) {
@@ -30,12 +33,16 @@ export class LoadTestService {
       timeout: 10,
     };
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       console.log("Iniciando teste de carga com configurações:", {
         options,
       });
 
-      autocannon(options, (err, result) => {
+      const createTestRunner = await testRunsInstance.createTestRun(
+        data.id ? data.id : 0,
+      );
+
+      autocannon(options, async (err, result) => {
         if (err) {
           console.error("Erro ao executar autocannon:", err);
           reject(err);
@@ -43,6 +50,13 @@ export class LoadTestService {
         }
         console.log("Teste concluído com sucesso!");
         resolve(result);
+
+        await testRunsInstance.updateTestRun(
+          createTestRunner[0],
+          result.duration,
+          JSON.stringify(result),
+          "completed",
+        );
       });
     });
   }
