@@ -125,9 +125,16 @@ export class UserController {
 
     const userUpdate = await userInstance.updateUser(validateRequestDTO.data);
 
-    if (!userUpdate) {
+    if (userUpdate === "Usuário não encontrado") {
       res.status(404).json({
         message: "User not updated, user not found.",
+      });
+      return;
+    }
+
+    if (userUpdate === "Email já existe") {
+      res.status(409).json({
+        message: userUpdate,
       });
       return;
     }

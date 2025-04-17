@@ -76,8 +76,13 @@ export class UserService {
     newEmail?: string;
   }) {
     const userToUpdate = await this.findUserSecrettly(data.email);
+    if (!userToUpdate) return "Usuário não encontrado";
 
-    if (!userToUpdate) return null;
+    if (!data.newEmail) return;
+
+    const verifyIfNewEmailExists = await this.findUserSecrettly(data.newEmail);
+
+    if (verifyIfNewEmailExists) return "Email já existe";
 
     await db("TODO_USER")
       .update({

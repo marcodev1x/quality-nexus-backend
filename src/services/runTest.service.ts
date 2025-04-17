@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { expect } from "chai";
-import { Expectations, Testing, TestResult } from "../types/Tests";
+import { Testing, TestResult } from "../types/Tests";
 import { findExpecationSpecialCase } from "../utils/expectation.utils";
 import { testRunsInstance } from "../instances/testRuns.instance";
 import { runExpectation } from "../helpers/runExpectation.helper";
@@ -52,7 +51,7 @@ export async function runTests(
           error: "Value not found",
         };
       }
-
+      
       const { passed, error } = runExpectation(
         actualValue,
         expectation.operator,
