@@ -1,9 +1,12 @@
 import { EnvsVars } from "../EnvsVars.ts";
 
-export const stripeKey = () => {
+const stripeKey = () => {
   return require("stripe")(EnvsVars.STRIPE_SECRET_KEY);
 };
 
-const globalPaymentKey = stripeKey();
+const stripeWebhookKey = () => {
+  return EnvsVars.STRIPE_WEBHOOK_KEY;
+};
 
-export default globalPaymentKey;
+export const globalPaymentKey = stripeKey();
+export const webhookPaymentKey = stripeWebhookKey();

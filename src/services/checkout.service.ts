@@ -1,5 +1,10 @@
-import globalPaymentKey from "../helpers/stripe.helper.ts";
+import {
+  globalPaymentKey,
+  webhookPaymentKey,
+} from "../helpers/stripe.helper.ts";
 import { Request } from "express";
+import Stripe from "stripe";
+import { db } from "../database.ts";
 
 export class CheckoutService {
   async CreateCheckoutSession(userEmail: string, svReq: Request) {
@@ -23,8 +28,43 @@ export class CheckoutService {
           quantity: 1,
         },
       ],
-      success_url: "https://suaapp.com/sucesso",
+      success_url: "http://localhost:5173/configuracoes/plan",
       cancel_url: "https://suaapp.com/cancelado",
     });
+  }
+
+  async UpdateWebHookEvent(rawBody: Buffer, sign: string) {
+    const eventStripe = globalPaymentKey.webhooks.constructEvent(
+      rawBody,
+      sign,
+      webhookPaymentKey,
+    );
+
+    if (eventStripe.type === "checkout.session.completed") {
+      const session = eventStripe.data.object as Stripe.Checkout.Session;
+      const allDataConsumer = session.customer_details;
+
+      if (
+        !allDataConsumer ||
+        session.payment_status !== "paid" ||
+        !allDataConsumer.email
+      )
+        return;
+
+      try {
+        const changeRole = await db("TODO_USER")
+          .where("email", allDataConsumer.email)
+          .update({
+            role: "plan",
+          });
+
+        console.log(session);
+        console.log(changeRole);
+        if (!changeRole) return;
+      } catch (err: any) {
+        console.error(err);
+        return;
+      }
+    }
   }
 }

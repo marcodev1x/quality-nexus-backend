@@ -12,4 +12,5 @@ export class EnvsVars {
   static DB_DATABASE = process.env.DB_DATABASE;
   static SECRET_KEY = process.env.SECRET_KEY;
   static STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+  static STRIPE_WEBHOOK_KEY = process.env.STRIPE_WEBHOOK_KEY;
 }

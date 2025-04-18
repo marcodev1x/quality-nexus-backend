@@ -1,5 +1,7 @@
 /node_modules
 /.idea
 /.fleet
+/.env
+.env
 ./.env
 .qodo
