@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+
 dotenv.config();
 
 export class EnvsVars {
@@ -10,4 +11,5 @@ export class EnvsVars {
   static DB_PASSWORD = process.env.DB_PASSWORD;
   static DB_DATABASE = process.env.DB_DATABASE;
   static SECRET_KEY = process.env.SECRET_KEY;
+  static STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 }
