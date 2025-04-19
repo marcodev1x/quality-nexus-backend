@@ -29,7 +29,7 @@ export class CheckoutService {
         },
       ],
       success_url: "http://localhost:5173/configuracoes/plan",
-      cancel_url: "https://suaapp.com/cancelado",
+      cancel_url: "http://localhost:5173/configuracoes/plan",
     });
   }
 
