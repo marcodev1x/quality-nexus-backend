@@ -5,6 +5,7 @@ import { testRunsInstance } from "../instances/testRuns.instance.ts";
 export class LoadTestService {
   async autoCannonCallback(
     data: TestingLoad,
+    userId: number,
   ): Promise<autocannon.Result | undefined> {
     const transformedHeaders: Record<string, string> = {};
 
@@ -40,6 +41,7 @@ export class LoadTestService {
 
       const createTestRunner = await testRunsInstance.createTestRun(
         data.id ? data.id : 0,
+        userId,
       );
 
       autocannon(options, async (err, result) => {

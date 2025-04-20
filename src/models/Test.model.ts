@@ -112,6 +112,7 @@ export const configSchema = z.object({
 
 export const TestSchema = z.object({
   id: z.number().optional(),
+  user: z.string().optional(),
   duration: z.string().optional(),
   description: z.string({ message: "Description is required" }),
   type: z.enum(["load", "performance", "integration"], {
@@ -140,6 +141,7 @@ export const loadConfigSchema = z.object({
 
 export const TestLoadSchema = z.object({
   id: z.number().optional(),
+  user: z.string().optional(),
   description: z.string(),
   type: z.literal("load"),
   config: loadConfigSchema,

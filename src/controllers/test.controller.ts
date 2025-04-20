@@ -8,6 +8,7 @@ import { RequestAuth } from "../types/RequestAuth";
 import { testInstance } from "../instances/test.instance.ts";
 import { runTests } from "../services/runTest.service.ts";
 import { loadTestInstance } from "../instances/load.instance.ts";
+import { testRunsInstance } from "../instances/testRuns.instance.ts";
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {
@@ -125,6 +126,13 @@ export class TestController {
   async runTestsInternal(req: RequestAuth, res: Response) {
     const validateSchemaRun = TestSchema.safeParse(req.body);
 
+    if (!req.userId) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
     if (!validateSchemaRun.success) {
       res.status(400).json({
         message: validateSchemaRun.error.flatten().fieldErrors,
@@ -132,7 +140,7 @@ export class TestController {
       return;
     }
 
-    const runTest = await runTests(validateSchemaRun.data);
+    const runTest = await runTests(validateSchemaRun.data, req.userId);
 
     if (!runTest) {
       res.status(404).json({
@@ -147,6 +155,13 @@ export class TestController {
   async runLoadTestsInternal(req: RequestAuth, res: Response) {
     const validateLoadSchema = TestLoadSchema.safeParse(req.body);
 
+    if (!req.userId) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
     if (!validateLoadSchema.success) {
       res.status(400).json({
         message: validateLoadSchema.error.flatten().fieldErrors,
@@ -158,6 +173,7 @@ export class TestController {
 
     const runLoadTest = await loadTestInstance.autoCannonCallback(
       validateLoadSchema.data,
+      req.userId,
     );
 
     if (!runLoadTest) {
@@ -168,5 +184,26 @@ export class TestController {
     }
 
     res.status(200).json(runLoadTest);
+  }
+
+  async testRunsByUserId(req: RequestAuth, res: Response) {
+    if (!req.userId) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+    }
+
+    const userTestsLogged = await testRunsInstance.testRunsById(
+      Number(req.userId),
+    );
+
+    if (!userTestsLogged) {
+      res.status(404).json({
+        message: "Tests logs not found",
+      });
+      return;
+    }
+
+    res.status(200).json(userTestsLogged);
   }
 }

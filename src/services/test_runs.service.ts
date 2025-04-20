@@ -1,9 +1,10 @@
 import { db } from "../database";
 
 export class TestRuns {
-  async createTestRun(testId: number) {
+  async createTestRun(testId: number, userId: number) {
     const createTestRun = await db("test_runs").insert({
       testId,
+      userId,
       duration: 0.0,
       status: "queued",
     });
@@ -22,5 +23,9 @@ export class TestRuns {
       results,
       status,
     });
+  }
+
+  async testRunsById(userId: number) {
+    return await db("test_runs").where({ userId: userId });
   }
 }

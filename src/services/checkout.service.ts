@@ -58,7 +58,6 @@ export class CheckoutService {
             role: "plan",
           });
 
-        console.log(session);
         console.log(changeRole);
         if (!changeRole) return;
       } catch (err: any) {

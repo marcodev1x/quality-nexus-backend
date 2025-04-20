@@ -6,6 +6,7 @@ import { runExpectation } from "../helpers/runExpectation.helper";
 
 export async function runTests(
   tests: Testing,
+  userId: number,
 ): Promise<TestResult | Error | null> {
   const startTime = Date.now();
 
@@ -17,7 +18,7 @@ export async function runTests(
   if (!tests.id) return new Error("Test ID não encontrado");
 
   // Store the test run ID returned from createTestRun
-  const testRunId = await testRunsInstance.createTestRun(tests.id);
+  const testRunId = await testRunsInstance.createTestRun(tests.id, userId);
 
   const requestConfig: AxiosRequestConfig = {
     method: tests.config.method,
@@ -51,7 +52,7 @@ export async function runTests(
           error: "Value not found",
         };
       }
-      
+
       const { passed, error } = runExpectation(
         actualValue,
         expectation.operator,
@@ -90,6 +91,7 @@ export async function runTests(
       passed: allPassed,
     };
   } catch (error: any) {
+    console.log(error);
     const apiResponse =
       error && error.response && error.response.data
         ? error.response.data

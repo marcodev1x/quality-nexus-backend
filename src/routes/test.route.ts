@@ -26,5 +26,10 @@ testRouter.post(
   authMiddleware,
   testControllerInstance.runLoadTestsInternal,
 );
+testRouter.get(
+  "/tests-logs",
+  authMiddleware,
+  testControllerInstance.testRunsByUserId,
+);
 
 export default testRouter;
