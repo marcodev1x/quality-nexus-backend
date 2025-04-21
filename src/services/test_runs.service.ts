@@ -26,6 +26,9 @@ export class TestRuns {
   }
 
   async testRunsById(userId: number) {
-    return await db("test_runs").where({ userId: userId });
+    return await db("test_runs")
+      .join("tests", "test_runs.testId", "tests.id")
+      .select("test_runs.*", "tests.*")
+      .where({ userId });
   }
 }
