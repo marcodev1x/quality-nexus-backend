@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { Expectations } from "../types/Tests";
+import { isNumber } from "lodash";
 
 // Função auxiliar para executar a expectativa com segurança de tipos
 export function runExpectation(
@@ -7,58 +8,59 @@ export function runExpectation(
   operator: Expectations["operator"],
   expected: any,
 ): { passed: boolean; error?: string } {
+  const stringedActual = String(actual); // Convertendo o valor atual para uma string
   try {
     switch (operator) {
       case "equal":
-        expect(actual).to.equal(expected);
+        expect(stringedActual).to.equal(expected);
         break;
       case "notEqual":
-        expect(actual).to.not.equal(expected);
+        expect(stringedActual).to.not.equal(expected);
         break;
       case "deepEqual":
-        expect(actual).to.deep.equal(expected);
+        expect(stringedActual).to.deep.equal(expected);
         break;
       case "notDeepEqual":
-        expect(actual).to.not.deep.equal(expected);
+        expect(stringedActual).to.not.deep.equal(expected);
         break;
       case "strictEqual":
-        expect(actual).to.equal(expected);
+        expect(stringedActual).to.equal(expected);
         break;
       case "notStrictEqual":
-        expect(actual).to.not.equal(expected);
+        expect(stringedActual).to.not.equal(expected);
         break;
       case "isAbove":
-        expect(actual).to.be.above(Number(expected));
+        expect(stringedActual).to.be.above(Number(expected));
         break;
       case "isAtLeast":
-        expect(actual).to.be.at.least(Number(expected));
+        expect(stringedActual).to.be.at.least(Number(expected));
         break;
       case "isBelow":
-        expect(actual).to.be.below(Number(expected));
+        expect(stringedActual).to.be.below(Number(expected));
         break;
       case "isAtMost":
-        expect(actual).to.be.at.most(Number(expected));
+        expect(stringedActual).to.be.at.most(Number(expected));
         break;
       case "isTrue":
-        expect(actual).to.be.true;
+        expect(stringedActual).to.be.true;
         break;
       case "isFalse":
-        expect(actual).to.be.false;
+        expect(stringedActual).to.be.false;
         break;
       case "isNull":
-        expect(actual).to.be.null;
+        expect(stringedActual).to.be.null;
         break;
       case "isNotNull":
-        expect(actual).to.not.be.null;
+        expect(stringedActual).to.not.be.null;
         break;
       case "exists":
-        expect(actual).to.exist;
+        expect(stringedActual).to.exist;
         break;
       case "notExists":
-        expect(actual).to.not.exist;
+        expect(stringedActual).to.not.exist;
         break;
       case "length.above":
-        expect(actual).to.have.length.above(Number(expected));
+        expect(stringedActual).to.have.length.above(Number(expected));
         break;
 
       default:

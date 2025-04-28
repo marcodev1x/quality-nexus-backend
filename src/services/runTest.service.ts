@@ -3,6 +3,7 @@ import { Testing, TestResult } from "../types/Tests";
 import { findExpecationSpecialCase } from "../utils/expectation.utils";
 import { testRunsInstance } from "../instances/testRuns.instance";
 import { runExpectation } from "../helpers/runExpectation.helper";
+import { isNumber } from "lodash";
 
 export async function runTests(
   tests: Testing,

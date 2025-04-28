@@ -1,3 +1,4 @@
 {
-  "dbcode.connections": []
+  "dbcode.connections": [],
+  "zencoder.enableRepoIndexing": true
 }

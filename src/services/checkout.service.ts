@@ -40,6 +40,8 @@ export class CheckoutService {
       webhookPaymentKey,
     );
 
+    console.log(eventStripe);
+
     if (eventStripe.type === "checkout.session.completed") {
       const session = eventStripe.data.object as Stripe.Checkout.Session;
       const allDataConsumer = session.customer_details;
@@ -61,6 +63,7 @@ export class CheckoutService {
         console.log(changeRole);
         if (!changeRole) return;
       } catch (err: any) {
+        console.log;
         console.error(err);
         return;
       }
