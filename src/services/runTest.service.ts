@@ -80,7 +80,12 @@ export async function runTests(
     await testRunsInstance.updateTestRun(
       testRunId[0],
       duration,
-      JSON.stringify({ passed: allPassed, resolvedResults }),
+      JSON.stringify({
+        passed: allPassed,
+        resolvedResults,
+        axiosData: axiosTest.data,
+        axiosStatus: axiosTest.status ? axiosTest.status : axiosTest.statusText,
+      }),
       allPassed ? "completed" : "failed",
     );
 
