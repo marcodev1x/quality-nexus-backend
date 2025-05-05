@@ -40,7 +40,7 @@ export class CheckoutService {
       webhookPaymentKey,
     );
 
-    console.log(eventStripe);
+    console.log({ eventStripe });
 
     if (eventStripe.type === "checkout.session.completed") {
       const session = eventStripe.data.object as Stripe.Checkout.Session;
