@@ -27,7 +27,7 @@ export class UserController {
 
     if (verifyExists) {
       res.status(409).json({
-        message: "User already exists",
+        message: "Endereço de e-mail já utilizado",
       });
       return;
     }

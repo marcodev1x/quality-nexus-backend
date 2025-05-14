@@ -13,4 +13,5 @@ export class EnvsVars {
   static SECRET_KEY = process.env.SECRET_KEY;
   static STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
   static STRIPE_WEBHOOK_KEY = process.env.STRIPE_WEBHOOK_KEY;
+  static FRONT_URL = process.env.FRONT_URL;
 }

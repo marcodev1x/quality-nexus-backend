@@ -5,6 +5,7 @@ import {
 import { Request } from "express";
 import Stripe from "stripe";
 import { db } from "../database.ts";
+import { EnvsVars } from "../EnvsVars.ts";
 
 export class CheckoutService {
   async CreateCheckoutSession(userEmail: string, svReq: Request) {
@@ -28,8 +29,8 @@ export class CheckoutService {
           quantity: 1,
         },
       ],
-      success_url: "http://localhost:5173/configuracoes/plan",
-      cancel_url: "http://localhost:5173/configuracoes/plan",
+      success_url: `${EnvsVars.FRONT_URL}/configuracoes/plan`,
+      cancel_url: `${EnvsVars.FRONT_URL}/configuracoes/plan`,
     });
   }
 
@@ -60,7 +61,6 @@ export class CheckoutService {
             role: "plan",
           });
 
-        console.log(changeRole);
         if (!changeRole) return;
       } catch (err: any) {
         console.log;
