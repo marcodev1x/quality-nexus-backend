@@ -9,6 +9,7 @@ import { testInstance } from "../instances/test.instance.ts";
 import { runTests } from "../services/runTest.service.ts";
 import { loadTestInstance } from "../instances/load.instance.ts";
 import { testRunsInstance } from "../instances/testRuns.instance.ts";
+import { userInstance } from "../instances/user.instance.ts";
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {
@@ -105,22 +106,33 @@ export class TestController {
 
   async findListsMany(req: RequestAuth, res: Response) {
     if (!req.userEmail) {
-      res.status(401).json({
-        message: "Unauthorized, token not found",
-      });
-      return;
-    }
+      return res.status(401).json({ message: "Unauthorized, token not found" });
+    };
 
-    const findLists = await testInstance.findListsByUserId(req.userEmail);
+    const [user, findLists] = await Promise.all([
+      userInstance.findUser(req.userEmail),
+      testInstance.findListsByUserId(req.userEmail)
+    ]);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    };
 
     if (!findLists) {
-      res.status(404).json({
-        message: "Test not found",
-      });
-      return;
+      return res.status(404).json({ message: "Tests not found" });
+    };
+
+    if (user.role === "free" && findLists.length >= 6) {
+      const apiTests = findLists.filter((list) => list.type === "integration").slice(0, 3);
+      const loadTests = findLists.filter((list) => list.type === "load").slice(0, 3);
+
+      const test = [...apiTests, ...loadTests];
+
+      return res.status(200).json(test);
     }
 
-    res.status(200).json(findLists);
+
+    return res.status(200).json( findLists );
   }
 
   async runTestsInternal(req: RequestAuth, res: Response) {

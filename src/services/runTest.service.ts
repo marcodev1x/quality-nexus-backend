@@ -17,6 +17,10 @@ export async function runTests(tests: Testing, userId: number): Promise<TestResu
 
   const testRunId = await testRunsInstance.createTestRun(tests.id, userId);
 
+  if(typeof tests.config.body === 'number'){
+    tests.config.body = tests.config.body.toString();
+  }
+
   const requestConfig: AxiosRequestConfig = {
     method: tests.config.method,
     url: tests.config.url,
@@ -36,7 +40,11 @@ export async function runTests(tests: Testing, userId: number): Promise<TestResu
       tests.config.expectations?.map(async (expectation) => {
         let actualValue = findExpecationSpecialCase(axiosTest, expectation.key);
 
-        if (actualValue === null || actualValue === undefined) {
+        if (actualValue && expectation.operator === "exists") {
+          return { ...expectation, passed: true };
+        }
+
+        if (!actualValue && expectation.operator !== "exists") {
           return { ...expectation, passed: false, error: "Value not found" };
         }
 
