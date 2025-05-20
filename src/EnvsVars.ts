@@ -14,4 +14,5 @@ export class EnvsVars {
   static STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
   static STRIPE_WEBHOOK_KEY = process.env.STRIPE_WEBHOOK_KEY;
   static FRONT_URL = process.env.FRONT_URL;
+  static LIMIT_TESTING_QUANTITY_FREE_USERS = Number(process.env.LIMIT_TESTING_QUANTITY_FREE_USERS);
 }

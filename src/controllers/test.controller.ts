@@ -10,6 +10,7 @@ import { runTests } from "../services/runTest.service.ts";
 import { loadTestInstance } from "../instances/load.instance.ts";
 import { testRunsInstance } from "../instances/testRuns.instance.ts";
 import { userInstance } from "../instances/user.instance.ts";
+import { EnvsVars } from "../EnvsVars.ts";
 
 export class TestController {
   async createTest(req: RequestAuth, res: Response) {
@@ -122,7 +123,7 @@ export class TestController {
       return res.status(404).json({ message: "Tests not found" });
     };
 
-    if (user.role === "free" && findLists.length >= 6) {
+    if (user.role === "free" && findLists.length >= EnvsVars.LIMIT_TESTING_QUANTITY_FREE_USERS) {
       const apiTests = findLists.filter((list) => list.type === "integration").slice(0, 3);
       const loadTests = findLists.filter((list) => list.type === "load").slice(0, 3);
 
