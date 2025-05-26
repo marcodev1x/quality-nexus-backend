@@ -2,6 +2,7 @@ import autocannon from "autocannon";
 import { TestingLoad } from "../types/Tests.ts";
 import { testRunsInstance } from "../instances/testRuns.instance.ts";
 
+
 export class LoadTestService {
   async autoCannonCallback(
     data: TestingLoad,
@@ -17,14 +18,27 @@ export class LoadTestService {
       });
     }
 
+    const validateFalsyBody = () => {
+      if(data.config.body === "N/A" ||
+        data.config.body === null ||
+        data.config.body === undefined ||
+        data.config.body === "" || data.config.body === 0 ||
+        data.config.body === false
+      ) {
+        return false;
+      }
+
+      return true;
+    }
+
     const options = {
       url: data.config.url,
       title: data.description,
       connections: data.config.usersQt,
       duration: data.config.time,
-      body: JSON.stringify(data.config.body),
+      body: validateFalsyBody() ? JSON.stringify(data.config.body) : undefined,
       headers: {
-        "Content-Type": "application/json",
+        ...(validateFalsyBody() ? { "Content-Type": "application/json" } : {}),
         ...transformedHeaders,
       },
       workers: data.config.workersthreads || 1,
