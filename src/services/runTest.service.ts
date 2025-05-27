@@ -41,19 +41,19 @@ export async function runTests(tests: Testing, userId: number): Promise<TestResu
         let actualValue = findExpecationSpecialCase(axiosTest, expectation.key);
 
         if (actualValue && expectation.operator === "exists") {
-          return { ...expectation, passed: true };
+          return { ...expectation, passed: { status: true, found: actualValue } };
         }
 
         if (!actualValue && expectation.operator !== "exists") {
-          return { ...expectation, passed: false, error: "Value not found" };
+          return { ...expectation, passed: { status: false, found: actualValue }, error: "Value not found" };
         }
 
         const { passed, error } = runExpectation(actualValue, expectation.operator, expectation.value);
-        return { ...expectation, passed: passed ? { status: true, found: actualValue } : false, error };
+        return { ...expectation, passed: passed ? { status: true, found: actualValue } : { status: false, found: actualValue }, error };
       }) || []
     );
 
-    const allPassed = results.every((result) => result.passed) ?? true;
+    const allPassed = results.every((result) => result.passed.status) ?? true;
     const duration = (Date.now() - startTime) / 1000;
 
     await testRunsInstance.updateTestRun(testRunId[0], duration, JSON.stringify({
