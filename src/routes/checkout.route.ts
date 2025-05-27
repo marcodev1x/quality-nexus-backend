@@ -9,5 +9,6 @@ checkoutRoute.post(
   express.raw({ type: "application/json" }),
   checkoutInstance.webhook,
 );
+checkoutRoute.post("/cancel-subscription", checkoutInstance.cancelPlan);
 
 export default checkoutRoute;

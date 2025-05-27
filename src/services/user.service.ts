@@ -29,7 +29,7 @@ export class UserService {
 
   async findUser(email: string) {
     return db("TODO_USER")
-      .select("email", "nome", "role")
+      .select("email", "nome", "role", "stripe_subscription_id")
       .where("email", email)
       .first();
   }

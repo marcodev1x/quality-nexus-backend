@@ -30,4 +30,24 @@ export class CheckoutController {
       });
     }
   }
+
+  async cancelPlan(req: Request, res: Response) {
+    const { subId } = req.body;
+
+    console.log(subId)
+
+    try {
+      const cancel = await checkoutServiceInstance.cancelSubscription(subId);
+      res.status(201).json({
+        status: "success",
+        message: "Subscription canceled successfully",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        status: "error at cancel subscription.",
+      });
+      return;
+    }
+  }
 }
