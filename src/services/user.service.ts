@@ -55,6 +55,7 @@ export class UserService {
     return {
       nome: user.nome,
       email: user.email,
+      quantityAccess: user.quantity_access,
       token: generateToken(user.email, user.id),
     };
   }
@@ -99,5 +100,48 @@ export class UserService {
 
   async getAllUsers() {
     return db("TODO_USER").select("id", "nome", "email", "createdAt");
+  }
+
+  async updateUserQuantityAccess(email: string) {
+    const userToUpdate = await this.findUserSecrettly(email);
+    if (!userToUpdate) return "Usuário não encontrado";
+
+    await db("TODO_USER")
+      .update({
+        quantity_access: userToUpdate.quantity_access + 1,
+      })
+      .where("email", email);
+
+    return { userChanged: true };
+  }
+
+  async getUserQuantityAccess(email: string){
+    const user = await this.findUserSecrettly(email);
+    if (!user) return "Usuário não encontrado";
+
+    return user.quantity_access;
+  }
+
+  async insertFormAnswer(email: string, formCode: string) {
+    const user = await this.findUserSecrettly(email);
+    if (!user) return "Usuário não encontrado";
+
+    await db("FORMS").insert({
+      user_id: user.id,
+      formCode: formCode,
+    });
+
+    return true;
+  }
+
+  async getIfUserAnsweredSpecificForm(email: string, formCode: string){
+    const user = await this.findUserSecrettly(email);
+    if (!user) return "Usuário não encontrado";
+
+    const formAnswer = await db("FORMS").where("user_id", user.id).where("formCode", formCode).first();
+
+    if(!formAnswer) return false;
+
+    return true;
   }
 }

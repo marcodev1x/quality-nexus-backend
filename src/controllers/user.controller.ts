@@ -80,6 +80,8 @@ export class UserController {
       return;
     }
 
+    await userInstance.updateUserQuantityAccess(validateRequestDTO.data.email);
+
     res.status(200).json({
       message: "User logged in successfully",
       user,
@@ -190,5 +192,58 @@ export class UserController {
     }
 
     res.status(409).json(true);
+  }
+
+  async getUserQuantityAccess(req: RequestAuth, res: Response) {
+    if (!req.userEmail) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
+    const user = await userInstance.getUserQuantityAccess(req.userEmail);
+
+    console.log(req.userEmail)
+
+    res.status(200).json({
+      quantityAccess: user,
+    });
+  }
+
+  async insertFormAnswer(req: RequestAuth, res: Response){
+    const { formCode } = req.body;
+
+    if(!req.userEmail){
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
+    const registerFormAnswer = await userInstance.insertFormAnswer(req.userEmail, formCode);
+
+    res.status(201).json({
+      registerFormAnswer,
+    });
+  }
+
+  async getUserIfAnsweredSameSpecificForm(req: RequestAuth, res: Response) {
+    const { formCode } = req.params;
+
+    if(!req.userEmail) {
+      res.status(401).json({
+        message: "Unauthorized, token not found",
+      });
+      return;
+    }
+
+    const hasBeenAnwsered = await userInstance.getIfUserAnsweredSpecificForm(req.userEmail, formCode);
+
+    console.log(hasBeenAnwsered)
+
+    res.status(200).json(
+      hasBeenAnwsered,
+    );
   }
 }
